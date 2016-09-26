@@ -1,0 +1,38 @@
+cmake_minimum_required(VERSION 2.8)
+project(vs CXX)
+
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+set(CMAKE_CXX_FLAGS "-std=c++11 -O0 -g")
+
+add_custom_target(all_examples)
+
+macro(add name)
+  add_executable(${name} ${name}.cpp)
+  add_dependencies(${name} all_examples)
+endmacro()
+
+add(vs1)
+add(vs2)
+add(vs3)
+add(vs4)
+add(vs5)
+add(vs6)
+add(vs7)
+add(vs8)
+add(vs9)
+add(vs10)
+
+find_package(CAF COMPONENTS io core)
+
+if (CAF_FOUND)
+  MESSAGE(STATUS "CAF includes: ${CAF_INCLUDE_DIRS}")
+  MESSAGE(STATUS "CAF libs: ${CAF_LIBRARIES}")
+  include_directories(${CAF_INCLUDE_DIRS})
+  macro(add_caf name)
+    add_executable(${name} ${name}.cpp)
+    target_link_libraries(${name} ${CAF_LIBRARIES})
+    add_dependencies(${name} all_examples)
+  endmacro()
+  add_caf(vs13)
+  add_caf(vs14)
+endif()
