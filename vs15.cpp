@@ -17,6 +17,7 @@ behavior adder(event_based_actor* self) {
 
 void caf_main(actor_system& sys) {
   actor a = sys.spawn(adder);
+  // scoped actor for ad hoc communication
   scoped_actor self{sys};
   self->request(a, infinite, 1, 2).receive(
     [&](int z) {
@@ -26,6 +27,10 @@ void caf_main(actor_system& sys) {
       cout << "Error: " << sys.render(err) << "\n";
     }
   );
+  // wrapping a into a function object
+  auto f = make_function_view(a);
+  message m = f(1, 2);
+  cout << "f(1, 2) = " << to_string(f(1, 2)) << "\n";
 }
 
 CAF_MAIN(io::middleman)

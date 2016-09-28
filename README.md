@@ -19,4 +19,5 @@ Dieses Repository beinhaltet alle Beispielanwendungen aus dem Vorlesungsblock
 12. Move-Semantik
 13. Eigene Klassen und Vererbung
 14. Erste (konfigurierbare) CAF Anwendung
-15. Einfache Aktoren
+15. Einfacher Additions-Aktor
+16. Aktor für Multiplikation, Addition, Division, und Subtraktion
