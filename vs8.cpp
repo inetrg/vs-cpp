@@ -1,23 +1,35 @@
-#include <memory>
-#include <cassert>
+#include <set>
+#include <vector>
+#include <string>
 #include <iostream>
+#include <algorithm> // for std::find_if and std::any_of
 
-using std::cout;
-using std::endl;
+using namespace std;
 
-void f(int& x); // f can modify x
-void g(const int& x); // x is immutable in g
-void h(int* x); // h can modify content of x
-void i(const int* x); // content of x is immutable in i
+void f() {
+  vector<string> names{"Tom", "Tim", "Bart", "Harry"};
+  auto end = names.end();
+  auto i = find_if(names.begin(), end,
+                   [](const string& name) { return name.size() > 3; });
+  if (i == end)
+    cout << "Only short names.\n";
+  else
+    cout << "First long name: " << *i << ".\n";
+}
 
-struct foo {
-  void f1(); // might modify this object
-  void f2() const; // this object is immutable in f2
-};
-
-void j(foo& x); // j can call f.f1() and f.f2()
-void k(foo& x); // k can only call x.f2()
+void g() {
+  vector<string> names{"Tom", "Tim", "Bart", "Harry"};
+  set<string> blacklist{"Bart"};
+  if (any_of(names.begin(), names.end(),
+             [&](const string& name) {
+               return blacklist.count(name) > 0;
+             }))
+    cout << "Blacklisted name found!\n";
+  else
+    cout << "All names are good to go!\n";
+}
 
 int main(int, char**) {
-  // nop
+  f();
+  g();
 }

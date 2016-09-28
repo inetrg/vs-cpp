@@ -12,9 +12,11 @@ Dieses Repository beinhaltet alle Beispielanwendungen aus dem Vorlesungsblock
 5. Zeiger auf Objekte auf dem Stack
 6. Sichere Zeiger auf Objekte im Heap
 7. Referenzen auf Objekte
-8. Const-Modifier auf Referenzen und Zeigern
-9. Funktions-Prototyp und -Definition am Beispiel einer Member-Funktion
-10. Überladen von operator<< für std::ostream zur Ausgabe eigener Typen
-11. Eigene Klassen
-12. Vererbung
-13. Erste (konfigurierbare) CAF Anwendung
+8. Iteratoren
+9. Const-Modifier auf Referenzen und Zeigern
+10. Funktions-Prototyp und -Definition am Beispiel einer Member-Funktion
+11. Überladen von operator<< für std::ostream zur Ausgabe eigener Typen
+12. Move-Semantik
+13. Eigene Klassen und Vererbung
+14. Erste (konfigurierbare) CAF Anwendung
+15. Einfache Aktoren

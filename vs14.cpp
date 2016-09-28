@@ -6,26 +6,16 @@
 
 using namespace caf;
 
-behavior adder(event_based_actor* self) {
-  return {
-    [](int x, int y) {
-      return x + y;
-    }
-  };
-}
+struct config : actor_system_config {
+  std::string msg = "Hello";
+  config() {
+    opt_group{custom_options_, "global"}
+    .add(msg, "message,m", "set output");
+  }
+};
 
-void caf_main(actor_system& sys) {
-  scoped_actor self{sys};
-  auto a = self->spawn(adder);
-  self->request(a, infinite, 10, 20).receive(
-    [&](int z) {
-      aout(self) << "10 + 20 = " << z << std::endl;
-    },
-    [&](error& err) {
-      aout(self) << "Error: " << sys.render(err) << std::endl;
-    }
-  );
+void caf_main(actor_system& sys, const config& cfg) {
+  std::cout << cfg.msg << std::endl;
 }
 
 CAF_MAIN(io::middleman)
-

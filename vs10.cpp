@@ -7,13 +7,18 @@
 using std::cout;
 using std::endl;
 
-struct point2d { int x; int y; };
+// in .hpp file
+class foo {
+public:
+  void bar();
+};
 
-std::ostream& operator<<(std::ostream& out, const point2d& x) {
-  return out << "point2d{" << x.x << ", " << x.y << "}";
+// in .cpp file
+void foo::bar() {
+  cout << "foo::bar()\n";
 }
 
 int main(int, char**) {
-  point2d p1{10, 20};
-  cout << p1 << endl;
+  foo f;
+  f.bar();
 }
