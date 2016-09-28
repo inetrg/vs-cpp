@@ -4,6 +4,7 @@
 #include "caf/all.hpp"
 #include "caf/io/all.hpp"
 
+using std::cout;
 using namespace caf;
 
 behavior adder(event_based_actor* self) {
@@ -15,14 +16,14 @@ behavior adder(event_based_actor* self) {
 }
 
 void caf_main(actor_system& sys) {
+  actor a = sys.spawn(adder);
   scoped_actor self{sys};
-  auto a = self->spawn(adder);
-  self->request(a, infinite, 10, 20).receive(
+  self->request(a, infinite, 1, 2).receive(
     [&](int z) {
-      aout(self) << "10 + 20 = " << z << std::endl;
+      cout << "1 + 2 = " << z << "\n";
     },
     [&](error& err) {
-      aout(self) << "Error: " << sys.render(err) << std::endl;
+      cout << "Error: " << sys.render(err) << "\n";
     }
   );
 }
