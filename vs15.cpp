@@ -29,7 +29,6 @@ void caf_main(actor_system& sys) {
   );
   // wrapping a into a function object
   auto f = make_function_view(a);
-  message m = f(1, 2);
   cout << "f(1, 2) = " << to_string(f(1, 2)) << "\n";
 }
 
