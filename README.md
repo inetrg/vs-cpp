@@ -1,6 +1,6 @@
 # Inhalt
 
-Dieses Repository beinhaltet alle Beispielanwendungen aus dem Vorlesungsblock
+Dieses Repository beinhaltet alle Beispielanwendungen des Vorlesungsblocks
 "Programmieren im Aktormodell mit C++".
 
 # Aufbau
@@ -20,4 +20,9 @@ Dieses Repository beinhaltet alle Beispielanwendungen aus dem Vorlesungsblock
 13. Eigene Klassen und Vererbung
 14. Erste (konfigurierbare) CAF Anwendung
 15. Einfacher Additions-Aktor
-16. Aktor für Multiplikation, Addition, Division, und Subtraktion
+16. Aktor für alle Grundrechenarten
+17. Entfernte Aktoren
+18. Eigene Datentypen in CAF
+19. Aktoren mit explizitem State
+20. Monitoring
+21. Linking
