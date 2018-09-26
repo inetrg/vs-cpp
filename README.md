@@ -26,3 +26,28 @@ Dieses Repository beinhaltet alle Beispielanwendungen des Vorlesungsblocks
 19. Aktoren mit explizitem State
 20. Monitoring
 21. Linking
+
+# Kompilieren
+
+Zum Kompilieren wird ein aktueller Compiler sowie CMake benötigt. Für die
+Beispiele 14-21 zusätzlich CAF. Die Schritte zum kompilieren sind die üblichen
+Schritte für CMake-basierte Projekte:
+
+```
+mkdir build
+cd build
+cmake -D ..
+make
+```
+
+Wenn Sie CAF auf dem System nicht installieren möchten ist auch die Angabe des
+`build`-Ordners einer kompilierten CAF Version möglich:
+
+```
+cmake -D CAF_ROOT_DIR=<path-to-caf>/build ..
+```
+
+# Ausführen
+
+Nach dem kompilieren befinden sich im `build` Ordner die ausführbaren Dateien
+`vs01` bis `vs21` und können direkt in einer Shell aufgerufen werden.
