@@ -1,13 +1,13 @@
-#include <tuple>
-#include <memory>
-#include <utility>
 #include <cassert>
 #include <iostream>
+#include <memory>
+#include <tuple>
+#include <utility>
 
-using std::cout;
-using std::endl;
-
-struct point2d { int x; int y; };
+struct point2d {
+  int x;
+  int y;
+};
 
 std::ostream& operator<<(std::ostream& out, const point2d& x) {
   return out << "point2d{" << x.x << ", " << x.y << "}";
@@ -15,5 +15,5 @@ std::ostream& operator<<(std::ostream& out, const point2d& x) {
 
 int main(int, char**) {
   point2d p1{10, 20};
-  cout << p1 << endl;
+  std::cout << p1 << '\n';
 }

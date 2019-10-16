@@ -2,8 +2,12 @@
 
 class scoped {
 public:
-  scoped() { std::cout << "scoped()\n"; }
-  ~scoped() { std::cout << "~scoped()\n"; }
+  scoped() {
+    std::cout << "scoped()\n";
+  }
+  ~scoped() {
+    std::cout << "~scoped()\n";
+  }
 };
 
 int main(int, char**) {

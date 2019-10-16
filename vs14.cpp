@@ -1,5 +1,5 @@
-#include <string>
 #include <iostream>
+#include <string>
 
 #include "caf/all.hpp"
 #include "caf/io/all.hpp"
@@ -9,8 +9,7 @@ using namespace caf;
 struct config : actor_system_config {
   std::string msg = "Hello";
   config() {
-    opt_group{custom_options_, "global"}
-    .add(msg, "message,m", "set output");
+    opt_group{custom_options_, "global"}.add(msg, "message,m", "set output");
   }
 };
 

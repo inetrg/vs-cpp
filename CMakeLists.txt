@@ -1,15 +1,20 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 project(vs CXX)
 
+include(GNUInstallDirs)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
-set(CMAKE_CXX_FLAGS "-std=c++11 -O0 -g -Wall -Wextra")
 
 add_custom_target(all_examples)
 
-macro(add name)
+function(add name)
   add_executable(${name} ${name}.cpp)
   add_dependencies(${name} all_examples)
-endmacro()
+endfunction()
 
 add(vs01)
 add(vs02)
@@ -44,4 +49,5 @@ if (CAF_FOUND)
   add_caf(vs19)
   add_caf(vs20)
   add_caf(vs21)
+  add_caf(vs22)
 endif()

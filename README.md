@@ -26,6 +26,7 @@ Dieses Repository beinhaltet alle Beispielanwendungen des Vorlesungsblocks
 19. Aktoren mit explizitem State
 20. Monitoring
 21. Linking
+22. Publish/Subscribe Gruppenkommunikation
 
 # Kompilieren
 
@@ -50,4 +51,4 @@ cmake -D CAF_ROOT_DIR=<path-to-caf>/build ..
 # Ausführen
 
 Nach dem kompilieren befinden sich im `build` Ordner die ausführbaren Dateien
-`vs01` bis `vs21` und können direkt in einer Shell aufgerufen werden.
+`vs01` bis `vs22` und können direkt in einer Shell ausgeführt werden.

@@ -1,5 +1,5 @@
-#include <memory> // unique_ptr
 #include <iostream> // cout
+#include <memory>   // unique_ptr
 
 // "header"
 
@@ -42,6 +42,6 @@ void derived::foo() {
 // main function
 
 int main(int, char**) {
-  std::unique_ptr<base> ptr{new derived};
+  std::unique_ptr<base> ptr = std::make_unique<derived>();
   ptr->foo();
 }

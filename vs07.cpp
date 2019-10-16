@@ -1,6 +1,6 @@
-#include <memory>
 #include <cassert>
 #include <iostream>
+#include <memory>
 
 using std::cout;
 using std::endl;
@@ -12,5 +12,5 @@ int main(int, char**) {
   xref = 10;
   int& xref2 = *xptr;
   xref2 = 20;
-  cout << "x = " << x << endl;
+  std::cout << "x = " << x << '\n';
 }

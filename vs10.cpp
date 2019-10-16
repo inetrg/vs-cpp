@@ -1,11 +1,8 @@
-#include <tuple>
-#include <memory>
-#include <utility>
 #include <cassert>
 #include <iostream>
-
-using std::cout;
-using std::endl;
+#include <memory>
+#include <tuple>
+#include <utility>
 
 // in .hpp file
 class foo {
@@ -15,7 +12,7 @@ public:
 
 // in .cpp file
 void foo::bar() {
-  cout << "foo::bar()\n";
+  std::cout << "foo::bar()\n";
 }
 
 int main(int, char**) {

@@ -1,17 +1,14 @@
-#include <memory>
 #include <cassert>
 #include <iostream>
+#include <memory>
 
-using std::cout;
-using std::endl;
-
-void f(int& x); // f can modify x
+void f(int& x);       // f can modify x
 void g(const int& x); // x is immutable in g
-void h(int* x); // h can modify content of x
+void h(int* x);       // h can modify content of x
 void i(const int* x); // content of x is immutable in i
 
 struct foo {
-  void f1(); // might modify this object
+  void f1();       // might modify this object
   void f2() const; // this object is immutable in f2
 };
 

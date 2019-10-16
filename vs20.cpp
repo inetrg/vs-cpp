@@ -1,11 +1,10 @@
-#include <string>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
 #include "caf/all.hpp"
 #include "caf/io/all.hpp"
 
-using std::cout;
 using namespace caf;
 
 using add_atom = atom_constant<atom("add")>;
@@ -15,11 +14,10 @@ behavior unreliable_worker(event_based_actor* self) {
     [=](add_atom, int x, int y) -> result<int> {
       if (x % 2 == 1 || y % 2 == 1) {
         self->quit(sec::invalid_argument);
-        return make_error(sec::invalid_argument,
-                          "I don't do odd numbers!");
+        return make_error(sec::invalid_argument, "I don't do odd numbers!");
       }
       return x + y;
-    }
+    },
   };
 }
 
@@ -32,7 +30,7 @@ behavior adder(stateful_actor<state>* self) {
   self->monitor(self->state.worker);
   self->set_down_handler([=](const down_msg& dm) {
     if (dm.source == self->state.worker) {
-      cout << "<<<restart failed worker>>>\n";
+      std::cout << "<<<restart failed worker>>>\n";
       // <monitored> is a shortcut for calling monitor() afterwards
       self->state.worker = self->spawn<monitored>(unreliable_worker);
     }
@@ -40,20 +38,21 @@ behavior adder(stateful_actor<state>* self) {
   return {
     [=](add_atom a, int x, int y) {
       return self->delegate(self->state.worker, a, x, y);
-    }
+    },
   };
 }
 
-std::ostream& operator<<(std::ostream& out, const expected<message>& x) {
-  return out << to_string(x);
-}
-
 void caf_main(actor_system& sys) {
-  auto f = make_function_view(sys.spawn(adder));
-  cout << "10 + 20 = " << f(add_atom::value, 10, 20) << "\n"
-       << "11 + 20 = " << f(add_atom::value, 11, 20) << "\n"
-       << "2 + 4 = " << f(add_atom::value, 2, 4) << "\n";
+  auto worker = sys.spawn(adder);
+  scoped_actor self{sys};
+  for (auto msg : {make_message(add_atom::value, 10, 20),
+                   make_message(add_atom::value, 11, 20),
+                   make_message(add_atom::value, 2, 4)}) {
+    std::cout << to_string(msg) << " = ";
+    self->request(worker, infinite, msg)
+      .receive([&](int result) { std::cout << result << '\n'; },
+               [&](const error& err) { std::cout << sys.render(err) << '\n'; });
+  }
 }
 
 CAF_MAIN(io::middleman)
-

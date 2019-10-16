@@ -1,10 +1,9 @@
-#include <string>
 #include <iostream>
+#include <string>
 
 #include "caf/all.hpp"
 #include "caf/io/all.hpp"
 
-using std::cout;
 using namespace caf;
 
 struct cell_state {
@@ -13,12 +12,8 @@ struct cell_state {
 
 behavior cell(stateful_actor<cell_state>* self) {
   return {
-    [=](get_atom) {
-      return self->state.value;
-    },
-    [=](put_atom, int x) {
-      self->state.value = x;
-    }
+    [=](get_atom) { return self->state.value; },
+    [=](put_atom, int x) { self->state.value = x; },
   };
 }
 
@@ -27,10 +22,14 @@ std::ostream& operator<<(std::ostream& out, const expected<message>& x) {
 }
 
 void caf_main(actor_system& sys) {
-  auto f = make_function_view(sys.spawn(cell));
-  f(put_atom::value, 42);
-  cout << "cell value: " << f(get_atom::value) << "\n";
+  auto worker = sys.spawn(cell);
+  scoped_actor self{sys};
+  self->send(worker, put_atom::value, 42);
+  self->request(worker, infinite, get_atom::value)
+    .receive([&](int value) { std::cout << "cell value: " << value << '\n'; },
+             [&](const error& err) {
+               std::cerr << "unable to read cell: " << sys.render(err) << '\n';
+             });
 }
 
 CAF_MAIN(io::middleman)
-

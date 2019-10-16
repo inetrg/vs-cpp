@@ -1,10 +1,7 @@
-#include <memory> // unique_ptr
 #include <iostream>
+#include <memory> // unique_ptr
 
-using std::cout;
-using std::unique_ptr;
-
-std::ostream& operator<<(std::ostream& out, const unique_ptr<int>& x) {
+std::ostream& operator<<(std::ostream& out, const std::unique_ptr<int>& x) {
   out << x.get();
   if (x)
     out << " (" << *x << ")";
@@ -12,11 +9,11 @@ std::ostream& operator<<(std::ostream& out, const unique_ptr<int>& x) {
 }
 
 int main(int, char**) {
-  unique_ptr<int> x;
-  unique_ptr<int> y{new int(42)};
+  std::unique_ptr<int> x;
+  std::unique_ptr<int> y = std::make_unique<int>(42);
   auto print = [&] {
-    cout << "x = " << x << ", "
-         << "y = " << y << "\n";
+    std::cout << "x = " << x << ", "
+              << "y = " << y << "\n";
   };
   print();
   // x = y => compiler error (unique_ptr is a move-only type)

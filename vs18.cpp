@@ -1,11 +1,9 @@
-#include <string>
 #include <iostream>
+#include <string>
 
 #include "caf/all.hpp"
 #include "caf/io/all.hpp"
 
-using std::cout;
-using std::cerr;
 using namespace caf;
 
 using add_atom = atom_constant<atom("add")>;
@@ -23,7 +21,7 @@ behavior point_math() {
   return {
     [](add_atom, point2d p1, point2d p2) -> point2d {
       return point2d{p1.x + p2.x, p1.y + p2.y};
-    }
+    },
   };
 }
 
@@ -38,9 +36,9 @@ struct config : actor_system_config {
   config() {
     add_message_type<point2d>("point2d");
     opt_group{custom_options_, "global"}
-    .add(host, "host,H", "hostname of server")
-    .add(port, "port,p", "port for publish/remote_actor")
-    .add(server, "server,s", "run as server");
+      .add(host, "host,H", "hostname of server")
+      .add(port, "port,p", "port for publish/remote_actor")
+      .add(server, "server,s", "run as server");
   }
 };
 
@@ -49,21 +47,23 @@ void caf_main(actor_system& sys, const config& cfg) {
   if (cfg.server) {
     auto p = mm.publish(sys.spawn(point_math), cfg.port);
     if (!p)
-      cerr << "unable to publish actor: " << sys.render(p.error()) << "\n";
+      std::cerr << "unable to publish actor: " << sys.render(p.error()) << '\n';
     else
-      cout << "math actor published at port " << *p << "\n";
-  } else {
-    auto x = mm.remote_actor(cfg.host, cfg.port);
-    if (!x)
-      cerr << "unable to connect to server: " << sys.render(x.error()) << "\n";
-    else {
-      auto f = make_function_view(*x);
-      point2d p1{10, 20};
-      point2d p2{15, 25};
-      cout << "f('add', p1, p2) = " << f(add_atom::value, p1, p2) << "\n";
-    }
+      std::cout << "math actor published at port " << *p << '\n';
+    return;
   }
+  auto worker = mm.remote_actor(cfg.host, cfg.port);
+  if (!worker) {
+    std::cerr << "unable to connect to server: " << sys.render(worker.error())
+              << '\n';
+    return;
+  }
+  scoped_actor self{sys};
+  auto msg = make_message(add_atom::value, point2d{10, 20}, point2d{15, 25});
+  std::cout << to_string(msg) << " = ";
+  self->request(*worker, infinite, msg)
+    .receive([&](int result) { std::cout << result << '\n'; },
+             [&](const error& err) { std::cout << sys.render(err) << '\n'; });
 }
 
 CAF_MAIN(io::middleman)
-
