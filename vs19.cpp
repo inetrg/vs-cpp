@@ -24,11 +24,11 @@ std::ostream& operator<<(std::ostream& out, const expected<message>& x) {
 void caf_main(actor_system& sys) {
   auto worker = sys.spawn(cell);
   scoped_actor self{sys};
-  self->send(worker, put_atom::value, 42);
-  self->request(worker, infinite, get_atom::value)
+  self->send(worker, put_atom_v, 42);
+  self->request(worker, infinite, get_atom_v)
     .receive([&](int value) { std::cout << "cell value: " << value << '\n'; },
              [&](const error& err) {
-               std::cerr << "unable to read cell: " << sys.render(err) << '\n';
+               std::cerr << "unable to read cell: " << to_string(err) << '\n';
              });
 }
 

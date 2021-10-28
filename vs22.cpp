@@ -7,8 +7,6 @@
 
 using namespace caf;
 
-using add_atom = atom_constant<atom("add")>;
-
 behavior writer(event_based_actor* self, const actor& user) {
   return {
     [=](const std::string& line) {
@@ -47,7 +45,7 @@ void caf_main(actor_system& sys, const config& cfg) {
                 << ">> press ENTER to stop the server\n";
       getc(stdin);
     } else {
-      std::cout << ">> publishing failed: " << sys.render(port.error()) << '\n';
+      std::cout << ">> publishing failed: " << to_string(port.error()) << '\n';
     }
     return;
   }
@@ -58,7 +56,7 @@ void caf_main(actor_system& sys, const config& cfg) {
     grp = std::move(*rg);
     std::cout << ">> got group: " << to_string(grp) << '\n';
   } else {
-    std::cerr << ">> failed to get group: " << sys.render(rg.error()) << '\n';
+    std::cerr << ">> failed to get group: " << to_string(rg.error()) << '\n';
     return;
   }
   scoped_actor self{sys};

@@ -6,17 +6,19 @@
 
 using namespace caf;
 
-using add_atom = atom_constant<atom("add")>;
-using sub_atom = atom_constant<atom("sub")>;
-using mul_atom = atom_constant<atom("mul")>;
-using div_atom = atom_constant<atom("div")>;
+CAF_BEGIN_TYPE_ID_BLOCK(vslab, first_custom_type_id)
+CAF_ADD_ATOM(vslab, vs, add_atom)
+CAF_ADD_ATOM(vslab, vs, sub_atom)
+CAF_ADD_ATOM(vslab, vs, mul_atom)
+CAF_ADD_ATOM(vslab, vs, div_atom)
+CAF_END_TYPE_ID_BLOCK(vslab)
 
 behavior math() {
   return {
-    [](add_atom, int x, int y) { return x + y; },
-    [](sub_atom, int x, int y) { return x - y; },
-    [](mul_atom, int x, int y) { return x * y; },
-    [](div_atom, int x, int y) -> result<int> {
+    [](vs::add_atom, int x, int y) { return x + y; },
+    [](vs::sub_atom, int x, int y) { return x - y; },
+    [](vs::mul_atom, int x, int y) { return x * y; },
+    [](vs::div_atom, int x, int y) -> result<int> {
       if (y == 0)
         return sec::invalid_argument;
       return x / y;
@@ -45,30 +47,30 @@ void caf_main(actor_system& sys, const config& cfg) {
   if (cfg.server) {
     auto p = mm.publish(sys.spawn(math), cfg.port);
     if (!p)
-      std::cerr << "unable to publish actor: " << sys.render(p.error()) << '\n';
+      std::cerr << "unable to publish actor: " << to_string(p.error()) << '\n';
     else
       std::cout << "math actor published at port " << *p << '\n';
   } else {
     auto adder = mm.remote_actor(cfg.host, cfg.port);
     if (!adder) {
-      std::cerr << "unable to connect to server: " << sys.render(adder.error())
+      std::cerr << "unable to connect to server: " << to_string(adder.error())
                 << '\n';
     } else {
       scoped_actor self{sys};
-      for (auto msg : {make_message(add_atom::value, 4, 2),
-                       make_message(sub_atom::value, 4, 2),
-                       make_message(mul_atom::value, 4, 2),
-                       make_message(div_atom::value, 4, 2),
-                       make_message(div_atom::value, 1, 0)}) {
+      for (auto msg : {make_message(vs::add_atom_v, 4, 2),
+                       make_message(vs::sub_atom_v, 4, 2),
+                       make_message(vs::mul_atom_v, 4, 2),
+                       make_message(vs::div_atom_v, 4, 2),
+                       make_message(vs::div_atom_v, 1, 0)}) {
         std::cout << to_string(msg) << " = ";
         self->request(*adder, infinite, msg)
           .receive([&](int result) { std::cout << result << '\n'; },
                    [&](const error& err) {
-                     std::cout << sys.render(err) << '\n';
+                     std::cout << to_string(err) << '\n';
                    });
       };
     }
   }
 }
 
-CAF_MAIN(io::middleman)
+CAF_MAIN(io::middleman, id_block::vslab)

@@ -17,10 +17,10 @@ void f() {
 
 void g() {
   std::vector<std::string> names{"Tom", "Tim", "Bart", "Harry"};
-  std::set<std::string> blacklist{"Bart"};
+  std::set<std::string> blocklist{"Bart"};
   if (any_of(names.begin(), names.end(),
-             [&](const auto& name) { return blacklist.count(name) > 0; }))
-    std::cout << "Blacklisted name found!\n";
+             [&](const auto& name) { return blocklist.count(name) > 0; }))
+    std::cout << "Blocked name found!\n";
   else
     std::cout << "All names are good to go!\n";
 }

@@ -7,8 +7,6 @@
 
 using namespace caf;
 
-using add_atom = atom_constant<atom("add")>;
-
 behavior unreliable_worker(event_based_actor* self) {
   return {
     [=](add_atom, int x, int y) -> result<int> {
@@ -49,13 +47,13 @@ std::ostream& operator<<(std::ostream& out, const expected<message>& x) {
 void caf_main(actor_system& sys) {
   auto worker = sys.spawn(adder);
   scoped_actor self{sys};
-  for (auto msg : {make_message(add_atom::value, 10, 20),
-                   make_message(add_atom::value, 11, 20),
-                   make_message(add_atom::value, 2, 4)}) {
+  for (auto msg :
+       {make_message(add_atom_v, 10, 20), make_message(add_atom_v, 11, 20),
+        make_message(add_atom_v, 2, 4)}) {
     std::cout << to_string(msg) << " = ";
     self->request(worker, infinite, msg)
       .receive([&](int result) { std::cout << result << '\n'; },
-               [&](const error& err) { std::cout << sys.render(err) << '\n'; });
+               [&](const error& err) { std::cout << to_string(err) << '\n'; });
   }
 }
 

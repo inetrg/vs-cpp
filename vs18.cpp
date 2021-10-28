@@ -6,7 +6,19 @@
 
 using namespace caf;
 
-using add_atom = atom_constant<atom("add")>;
+struct point2d;
+
+CAF_BEGIN_TYPE_ID_BLOCK(vslab, first_custom_type_id)
+
+// -- types ------------------------------------------------------------------
+
+CAF_ADD_TYPE_ID(vslab, (point2d))
+
+// -- atoms ------------------------------------------------------------------
+
+CAF_ADD_ATOM(vslab, vs, add_atom)
+
+CAF_END_TYPE_ID_BLOCK(vslab)
 
 struct point2d {
   int x;
@@ -14,8 +26,8 @@ struct point2d {
 };
 
 template <class Inspector>
-typename Inspector::result_type inspect(Inspector& f, point2d& p) {
-  return f(meta::type_name("point2d"), p.x, p.y);
+bool inspect(Inspector& f, point2d& p) {
+  return f.object(p).fields(f.field("x", p.x), f.field("y", p.y));
 }
 behavior point_math() {
   return {
@@ -34,7 +46,6 @@ struct config : actor_system_config {
   uint16_t port = 0;
   bool server = false;
   config() {
-    add_message_type<point2d>("point2d");
     opt_group{custom_options_, "global"}
       .add(host, "host,H", "hostname of server")
       .add(port, "port,p", "port for publish/remote_actor")
@@ -47,23 +58,23 @@ void caf_main(actor_system& sys, const config& cfg) {
   if (cfg.server) {
     auto p = mm.publish(sys.spawn(point_math), cfg.port);
     if (!p)
-      std::cerr << "unable to publish actor: " << sys.render(p.error()) << '\n';
+      std::cerr << "unable to publish actor: " << to_string(p.error()) << '\n';
     else
       std::cout << "math actor published at port " << *p << '\n';
     return;
   }
   auto worker = mm.remote_actor(cfg.host, cfg.port);
   if (!worker) {
-    std::cerr << "unable to connect to server: " << sys.render(worker.error())
+    std::cerr << "unable to connect to server: " << to_string(worker.error())
               << '\n';
     return;
   }
   scoped_actor self{sys};
-  auto msg = make_message(add_atom::value, point2d{10, 20}, point2d{15, 25});
+  auto msg = make_message(vs::add_atom_v, point2d{10, 20}, point2d{15, 25});
   std::cout << to_string(msg) << " = ";
   self->request(*worker, infinite, msg)
     .receive([&](int result) { std::cout << result << '\n'; },
-             [&](const error& err) { std::cout << sys.render(err) << '\n'; });
+             [&](const error& err) { std::cout << to_string(err) << '\n'; });
 }
 
-CAF_MAIN(io::middleman)
+CAF_MAIN(io::middleman, id_block::vslab)
